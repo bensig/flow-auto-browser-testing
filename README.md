@@ -87,6 +87,76 @@ steps:
     text: "Submit"
 ```
 
+### Environment Variables
+
+Use `${VAR_NAME}` syntax to inject environment variables into your flows:
+
+```yaml
+name: "Login with env vars"
+
+steps:
+  - type: goto
+    path: "/login"
+
+  - type: fill
+    selector: "#email"
+    value: "${TEST_EMAIL}"
+
+  - type: fill
+    selector: "#password"
+    value: "${TEST_PASSWORD}"
+
+  - type: click
+    text: "Sign In"
+```
+
+Run with environment variables:
+
+```bash
+TEST_EMAIL="user@example.com" TEST_PASSWORD="secret123" node run.js flows/login.yaml
+```
+
+Or export them first:
+
+```bash
+export TEST_EMAIL="user@example.com"
+export TEST_PASSWORD="secret123"
+node run.js flows/login.yaml
+```
+
+### Optional Steps
+
+Mark steps as `optional: true` to continue the flow even if they fail. Useful for dismissing popups or cookies banners that may or may not appear:
+
+```yaml
+steps:
+  - type: goto
+    path: "/"
+
+  # This won't fail the flow if the popup doesn't exist
+  - type: click
+    text: "Accept Cookies"
+    optional: true
+
+  # This won't fail if dismiss button isn't found
+  - type: click
+    selector: ".modal-dismiss"
+    optional: true
+
+  # Continue with the actual test...
+  - type: fill
+    selector: "#email"
+    value: "test@example.com"
+```
+
+Optional steps that fail show as "skipped" in the output:
+
+```
+STEP 2: click text="Accept Cookies"
+  (optional step skipped: Timeout 15000ms exceeded)
+STEP 3: fill #email
+```
+
 ### Step Reference
 
 #### Navigation

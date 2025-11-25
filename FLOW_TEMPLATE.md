@@ -278,6 +278,89 @@ STEPS:
 
 ---
 
+## Environment Variables
+
+Use `${VAR_NAME}` to keep secrets out of your flow files:
+
+**Your description:**
+```
+FLOW NAME: Login Test
+
+BASE URL: http://localhost:5175
+
+STEPS:
+1. Go to /login
+2. Enter the value of TEST_EMAIL env var in the #email field
+3. Enter the value of TEST_PASSWORD env var in the #password field
+4. Click "Sign In"
+```
+
+**Generated YAML:**
+```yaml
+name: "Login Test"
+
+config:
+  baseUrl: "http://localhost:5175"
+
+steps:
+  - type: goto
+    path: "/login"
+
+  - type: fill
+    selector: "#email"
+    value: "${TEST_EMAIL}"
+
+  - type: fill
+    selector: "#password"
+    value: "${TEST_PASSWORD}"
+
+  - type: click
+    text: "Sign In"
+```
+
+**Run with:**
+```bash
+TEST_EMAIL="user@example.com" TEST_PASSWORD="secret" node run.js flows/login.yaml
+```
+
+---
+
+## Optional Steps (for popups/modals that may not appear)
+
+Mark steps as optional when they might not always be present:
+
+**Your description:**
+```
+STEPS:
+1. Go to /home
+2. (optional) Click "Accept Cookies" if it appears
+3. (optional) Click "Dismiss" on any welcome modal
+4. Enter "search term" in the #search field
+```
+
+**Generated YAML:**
+```yaml
+steps:
+  - type: goto
+    path: "/home"
+
+  - type: click
+    text: "Accept Cookies"
+    optional: true
+
+  - type: click
+    text: "Dismiss"
+    optional: true
+
+  - type: fill
+    selector: "#search"
+    value: "search term"
+```
+
+Optional steps that fail will be skipped without stopping the flow.
+
+---
+
 ## Running with Debug Output
 
 Always run tests with `--verbose` for debugging:
