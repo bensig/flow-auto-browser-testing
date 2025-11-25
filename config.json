@@ -1,0 +1,8 @@
+{
+  "envs": {
+    "local": { "baseUrl": "http://localhost:5175" },
+    "staging": { "baseUrl": "https://staging.example.com" }
+  },
+  "defaultEnv": "local",
+  "defaultTimeoutMs": 15000
+}

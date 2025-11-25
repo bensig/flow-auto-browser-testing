@@ -1,0 +1,63 @@
+name: "Stripe Checkout Flow"
+
+config:
+  baseUrl: "http://localhost:5175"
+  timeoutMs: 30000
+
+steps:
+  # Login
+  - type: goto
+    path: "/login"
+
+  - type: fill
+    selector: 'input[type="email"]'
+    value: "test@example.com"
+
+  - type: fill
+    selector: 'input[type="password"]'
+    value: "password123"
+
+  - type: click
+    text: "Login"
+
+  - type: wait-for-url
+    contains: "/dashboard"
+
+  # Initiate checkout
+  - type: click
+    text: "Buy now"
+
+  - type: wait-for-url
+    contains: "checkout"
+
+  # Fill Stripe card details
+  - type: iframe-fill
+    iframeSelector: 'iframe[name^="__privateStripeFrame"]'
+    selector: 'input[name="cardnumber"]'
+    value: "4242424242424242"
+
+  - type: iframe-fill
+    iframeSelector: 'iframe[name^="__privateStripeFrame"]'
+    selector: 'input[name="exp-date"]'
+    value: "12/34"
+
+  - type: iframe-fill
+    iframeSelector: 'iframe[name^="__privateStripeFrame"]'
+    selector: 'input[name="cvc"]'
+    value: "123"
+
+  - type: iframe-fill
+    iframeSelector: 'iframe[name^="__privateStripeFrame"]'
+    selector: 'input[name="postal"]'
+    value: "90210"
+
+  # Submit payment
+  - type: click
+    text: "Pay"
+
+  - type: wait-for-text
+    selector: "body"
+    text: "Payment successful"
+
+  - type: screenshot
+    path: "screenshots/stripe-success.png"

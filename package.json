@@ -1,0 +1,22 @@
+{
+  "name": "web-flow-runner",
+  "version": "1.0.0",
+  "description": "CLI tool to run browser automation flows using Playwright",
+  "main": "run.js",
+  "scripts": {
+    "start": "node run.js",
+    "test": "node run.js flows/example.yaml"
+  },
+  "keywords": [
+    "playwright",
+    "browser",
+    "automation",
+    "testing"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "js-yaml": "^4.1.1",
+    "playwright": "^1.56.1"
+  }
+}

@@ -1,0 +1,19 @@
+name: "Simple Navigation Test"
+
+config:
+  baseUrl: "https://httpbin.org"
+  timeoutMs: 30000
+
+steps:
+  - type: goto
+    path: "/html"
+
+  - type: wait-for-selector
+    selector: "h1"
+
+  - type: assert-text
+    selector: "body"
+    text: "Herman Melville"
+
+  - type: screenshot
+    path: "screenshots/example.png"
