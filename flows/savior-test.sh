@@ -1,15 +1,15 @@
 #!/bin/bash
-# XAVIOR Full Auth + Payment Flow Test
+# SAVIOR Full Auth + Payment Flow Test
 # Automates magic link request, token extraction, and browser testing
 
 set -e
 
-EMAIL="${1:-bensig@gmail.com}"
+EMAIL="${1:-test@test.com}"
 API_URL="${API_URL:-http://localhost:9080/v1}"
 FLOW_DIR="$(dirname "$0")"
-RUNNER="/Users/nobi/Projects/AI/auto-browser-testing/run.js"
+RUNNER="/path/to/flow-auto-browser-testing/run.js"
 
-echo "🔐 XAVIOR Auth Flow Test"
+echo "🔐 SAVIOR Auth Flow Test"
 echo "========================"
 echo "Email: $EMAIL"
 echo ""
@@ -68,7 +68,7 @@ echo ""
 echo "🌐 Running browser test..."
 echo ""
 
-MAGIC_LINK_TOKEN="$TOKEN" EMAIL="$EMAIL" node "$RUNNER" "${FLOW_DIR}/xavior-full-flow.yaml" --headless=false --verbose
+MAGIC_LINK_TOKEN="$TOKEN" EMAIL="$EMAIL" node "$RUNNER" "${FLOW_DIR}/savior-full-flow.yaml" --headless=false --verbose
 
 echo ""
 echo "✅ Test complete! Check screenshots/ folder for results."

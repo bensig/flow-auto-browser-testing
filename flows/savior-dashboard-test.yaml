@@ -1,11 +1,11 @@
-name: "XAVIOR Dashboard View (Paid User)"
+name: "SAVIOR Dashboard View (Paid User)"
 
 config:
   baseUrl: "http://localhost:5175"
   timeoutMs: 30000
 
 # Simple test to verify paid user sees dashboard with hubs
-# USAGE: MAGIC_LINK_TOKEN=xxx EMAIL=xxx node run.js flows/xavior-dashboard-test.yaml
+# USAGE: MAGIC_LINK_TOKEN=xxx EMAIL=xxx node run.js flows/savior-dashboard-test.yaml
 
 steps:
   # Step 1: Login with magic link

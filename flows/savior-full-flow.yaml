@@ -1,10 +1,10 @@
-name: "XAVIOR Full Login + Payment Flow"
+name: "SAVIOR Full Login + Payment Flow"
 
 config:
   baseUrl: "http://localhost:5175"
   timeoutMs: 60000
 
-# This flow tests the complete XAVIOR experience:
+# This flow tests the complete SAVIOR experience:
 # 1. Login page → request magic link
 # 2. Verify page → simulate clicking magic link (token from env)
 # 3. Dashboard → payment gate
@@ -19,7 +19,7 @@ config:
 #
 # 2. Run test with token:
 #    MAGIC_LINK_TOKEN=xxx EMAIL=test@example.com \
-#      node run.js flows/xavior-full-flow.yaml --headless=false --verbose
+#      node run.js flows/savior-full-flow.yaml --headless=false --verbose
 
 steps:
   # Step 1: Go directly to verify page with magic link token
@@ -32,7 +32,7 @@ steps:
 
   # Step 3: Should redirect to main app or show success
   - type: screenshot
-    path: "screenshots/xavior-01-after-verify.png"
+    path: "screenshots/savior-01-after-verify.png"
 
   # Step 4: Wait for the app to load after auth
   - type: wait
@@ -40,7 +40,7 @@ steps:
 
   # Step 5: Check if we're on the payment gate (for free users) or dashboard
   - type: screenshot
-    path: "screenshots/xavior-02-after-login.png"
+    path: "screenshots/savior-02-after-login.png"
 
   # Step 6: If there's a payment button, click it (use button selector for specificity)
   - type: click
@@ -53,7 +53,7 @@ steps:
 
   # Step 8: Take screenshot of checkout page
   - type: screenshot
-    path: "screenshots/xavior-03-stripe-checkout.png"
+    path: "screenshots/savior-03-stripe-checkout.png"
 
   # Step 9: Fill in Stripe card number (direct on page, not in iframe)
   - type: fill
@@ -82,7 +82,7 @@ steps:
 
   # Step 14: Screenshot after filling (before checkbox)
   - type: screenshot
-    path: "screenshots/xavior-03b-form-partial.png"
+    path: "screenshots/savior-03b-form-partial.png"
 
   # Step 15: Uncheck save info checkbox
   - type: click
@@ -95,7 +95,7 @@ steps:
 
   # Step 17: Screenshot before submit
   - type: screenshot
-    path: "screenshots/xavior-04-form-filled.png"
+    path: "screenshots/savior-04-form-filled.png"
 
   # Step 18: Click Subscribe button
   - type: click
@@ -107,7 +107,7 @@ steps:
 
   # Step 20: Screenshot during/after processing
   - type: screenshot
-    path: "screenshots/xavior-05-processing.png"
+    path: "screenshots/savior-05-processing.png"
 
   # Step 21: Wait for redirect to complete
   - type: wait
@@ -119,7 +119,7 @@ steps:
 
   # Step 23: Screenshot after payment success
   - type: screenshot
-    path: "screenshots/xavior-06-after-payment.png"
+    path: "screenshots/savior-06-after-payment.png"
 
   # Step 24: Wait a bit more for hubs to load
   - type: wait
@@ -127,4 +127,4 @@ steps:
 
   # Step 25: Final screenshot - should see hubs/dashboard
   - type: screenshot
-    path: "screenshots/xavior-07-dashboard-hubs.png"
+    path: "screenshots/savior-07-dashboard-hubs.png"

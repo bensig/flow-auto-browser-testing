@@ -1,13 +1,13 @@
-name: "XAVIOR Magic Link Full Flow"
+name: "SAVIOR Magic Link Full Flow"
 
 config:
   baseUrl: "http://localhost:5175"
   timeoutMs: 30000
 
 # NOTE: This flow requires a MAGIC_LINK_TOKEN env var to be set
-# Run with the wrapper script: ./flows/xavior-test.sh
+# Run with the wrapper script: ./flows/savior-test.sh
 # Or manually set the token and run:
-#   MAGIC_LINK_TOKEN=xxx EMAIL=test@example.com node run.js flows/xavior-magic-link.yaml
+#   MAGIC_LINK_TOKEN=xxx EMAIL=test@example.com node run.js flows/savior-magic-link.yaml
 
 steps:
   # Step 1: Navigate directly to the magic link verify URL
@@ -25,4 +25,4 @@ steps:
 
   # Step 4: Take screenshot of final state
   - type: screenshot
-    path: "screenshots/xavior-magic-link-success.png"
+    path: "screenshots/savior-magic-link-success.png"

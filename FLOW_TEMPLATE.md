@@ -366,7 +366,7 @@ Optional steps that fail will be skipped without stopping the flow.
 Always run tests with `--verbose` for debugging:
 
 ```bash
-node /Users/nobi/Projects/AI/auto-browser-testing/run.js flows/myflow.yaml --verbose
+node /path/to/flow-auto-browser-testing/run.js flows/myflow.yaml --verbose
 ```
 
 If a test fails, the output shows:

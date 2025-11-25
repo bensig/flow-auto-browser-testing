@@ -11,7 +11,9 @@
       "Bash(git commit:*)",
       "Bash(gh repo create:*)",
       "Bash(git push)",
-      "Bash(git remote set-url:*)"
+      "Bash(git remote set-url:*)",
+      "Bash(cat:*)",
+      "Bash(git filter-branch -f --env-filter '\nexport GIT_AUTHOR_NAME=\"\"save20k\"\"\nexport GIT_AUTHOR_EMAIL=\"\"hello@save20k.dev\"\"\nexport GIT_COMMITTER_NAME=\"\"save20k\"\"\nexport GIT_COMMITTER_EMAIL=\"\"hello@save20k.dev\"\"\n' --tag-name-filter cat -- --branches --tags)"
     ],
     "deny": [],
     "ask": []
