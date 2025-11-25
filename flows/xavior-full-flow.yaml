@@ -1,0 +1,130 @@
+name: "XAVIOR Full Login + Payment Flow"
+
+config:
+  baseUrl: "http://localhost:5175"
+  timeoutMs: 60000
+
+# This flow tests the complete XAVIOR experience:
+# 1. Login page → request magic link
+# 2. Verify page → simulate clicking magic link (token from env)
+# 3. Dashboard → payment gate
+# 4. Stripe checkout
+#
+# USAGE:
+# 1. First request a magic link and extract token from tenant logs:
+#    curl -s -X POST http://localhost:9080/v1/auth/request-access \
+#      -H "Content-Type: application/json" \
+#      -d '{"email": "test@example.com"}'
+#    docker logs tenant_xxx 2>&1 | grep "token=" | tail -1
+#
+# 2. Run test with token:
+#    MAGIC_LINK_TOKEN=xxx EMAIL=test@example.com \
+#      node run.js flows/xavior-full-flow.yaml --headless=false --verbose
+
+steps:
+  # Step 1: Go directly to verify page with magic link token
+  - type: goto
+    url: "http://localhost:5175/auth/verify?token=${MAGIC_LINK_TOKEN}&email=${EMAIL}"
+
+  # Step 2: Wait for verification to process
+  - type: wait
+    ms: 2000
+
+  # Step 3: Should redirect to main app or show success
+  - type: screenshot
+    path: "screenshots/xavior-01-after-verify.png"
+
+  # Step 4: Wait for the app to load after auth
+  - type: wait
+    ms: 3000
+
+  # Step 5: Check if we're on the payment gate (for free users) or dashboard
+  - type: screenshot
+    path: "screenshots/xavior-02-after-login.png"
+
+  # Step 6: If there's a payment button, click it (use button selector for specificity)
+  - type: click
+    selector: "button:has-text('Become a Founding Member')"
+    optional: true
+
+  # Step 7: Wait for Stripe checkout to load (if payment clicked)
+  - type: wait
+    ms: 3000
+
+  # Step 8: Take screenshot of checkout page
+  - type: screenshot
+    path: "screenshots/xavior-03-stripe-checkout.png"
+
+  # Step 9: Fill in Stripe card number (direct on page, not in iframe)
+  - type: fill
+    selector: "#cardNumber, input[data-elements-stable-field-name='cardNumber']"
+    value: "4242424242424242"
+
+  # Step 10: Fill in expiry date
+  - type: fill
+    selector: "#cardExpiry, input[data-elements-stable-field-name='cardExpiry']"
+    value: "0428"
+
+  # Step 11: Fill in CVC
+  - type: fill
+    selector: "#cardCvc, input[data-elements-stable-field-name='cardCvc']"
+    value: "424"
+
+  # Step 12: Fill in cardholder name
+  - type: fill
+    selector: "#billingName, input[name='billingName']"
+    value: "4444"
+
+  # Step 13: Fill in ZIP code
+  - type: fill
+    selector: "#billingPostalCode, input[name='billingPostalCode']"
+    value: "42424"
+
+  # Step 14: Screenshot after filling (before checkbox)
+  - type: screenshot
+    path: "screenshots/xavior-03b-form-partial.png"
+
+  # Step 15: Uncheck save info checkbox
+  - type: click
+    selector: "[data-testid='LINK-persistentLinkCheckbox'] input, input[type='checkbox']"
+    optional: true
+
+  # Step 16: Wait a moment for form validation
+  - type: wait
+    ms: 1000
+
+  # Step 17: Screenshot before submit
+  - type: screenshot
+    path: "screenshots/xavior-04-form-filled.png"
+
+  # Step 18: Click Subscribe button
+  - type: click
+    selector: "button:has-text('Subscribe')"
+
+  # Step 19: Wait for payment processing (Stripe can take 10-15 seconds)
+  - type: wait
+    ms: 15000
+
+  # Step 20: Screenshot during/after processing
+  - type: screenshot
+    path: "screenshots/xavior-05-processing.png"
+
+  # Step 21: Wait for redirect to complete
+  - type: wait
+    ms: 10000
+
+  # Step 22: Wait for app to load after redirect
+  - type: wait
+    ms: 5000
+
+  # Step 23: Screenshot after payment success
+  - type: screenshot
+    path: "screenshots/xavior-06-after-payment.png"
+
+  # Step 24: Wait a bit more for hubs to load
+  - type: wait
+    ms: 2000
+
+  # Step 25: Final screenshot - should see hubs/dashboard
+  - type: screenshot
+    path: "screenshots/xavior-07-dashboard-hubs.png"

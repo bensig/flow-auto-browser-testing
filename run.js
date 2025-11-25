@@ -43,6 +43,31 @@ function loadConfig() {
   return JSON.parse(fs.readFileSync(configPath, 'utf8'));
 }
 
+// Interpolate environment variables in strings (${VAR} syntax)
+function interpolateEnvVars(value) {
+  if (typeof value === 'string') {
+    return value.replace(/\$\{([^}]+)\}/g, (match, varName) => {
+      const envValue = process.env[varName];
+      if (envValue === undefined) {
+        console.warn(`Warning: Environment variable ${varName} is not set`);
+        return match; // Keep original if not found
+      }
+      return envValue;
+    });
+  }
+  if (Array.isArray(value)) {
+    return value.map(interpolateEnvVars);
+  }
+  if (value && typeof value === 'object') {
+    const result = {};
+    for (const [k, v] of Object.entries(value)) {
+      result[k] = interpolateEnvVars(v);
+    }
+    return result;
+  }
+  return value;
+}
+
 // Load and parse flow file
 function loadFlow(flowFile) {
   const flowPath = path.resolve(flowFile);
@@ -51,12 +76,17 @@ function loadFlow(flowFile) {
   }
 
   const content = fs.readFileSync(flowPath, 'utf8');
+  let flow;
   if (flowPath.endsWith('.yaml') || flowPath.endsWith('.yml')) {
-    return yaml.load(content);
+    flow = yaml.load(content);
   } else if (flowPath.endsWith('.json')) {
-    return JSON.parse(content);
+    flow = JSON.parse(content);
+  } else {
+    throw new Error('Flow file must be .yaml, .yml, or .json');
   }
-  throw new Error('Flow file must be .yaml, .yml, or .json');
+
+  // Interpolate environment variables throughout the flow
+  return interpolateEnvVars(flow);
 }
 
 // Merge config: global config < env config < flow config
@@ -318,6 +348,15 @@ async function run() {
       await executeStep(page, step, config);
       stepResult.status = 'passed';
     } catch (err) {
+      // Handle optional steps - continue without failing
+      if (step.optional) {
+        stepResult.status = 'skipped';
+        stepResult.error = err.message;
+        console.log(`  (optional step skipped: ${err.message.split('\n')[0]})`);
+        results.push(stepResult);
+        continue;
+      }
+
       stepResult.status = 'failed';
       stepResult.error = err.message;
       success = false;
