@@ -1,0 +1,29 @@
+name: "XAVIOR Dashboard View (Paid User)"
+
+config:
+  baseUrl: "http://localhost:5175"
+  timeoutMs: 30000
+
+# Simple test to verify paid user sees dashboard with hubs
+# USAGE: MAGIC_LINK_TOKEN=xxx EMAIL=xxx node run.js flows/xavior-dashboard-test.yaml
+
+steps:
+  # Step 1: Login with magic link
+  - type: goto
+    url: "http://localhost:5175/auth/verify?token=${MAGIC_LINK_TOKEN}&email=${EMAIL}"
+
+  # Step 2: Wait for verification
+  - type: wait
+    ms: 3000
+
+  # Step 3: Screenshot after login
+  - type: screenshot
+    path: "screenshots/dashboard-01-after-login.png"
+
+  # Step 4: Wait for dashboard to fully load
+  - type: wait
+    ms: 3000
+
+  # Step 5: Final screenshot - should see hubs
+  - type: screenshot
+    path: "screenshots/dashboard-02-hubs.png"
